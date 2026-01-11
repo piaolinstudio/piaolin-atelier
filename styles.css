@@ -1,32 +1,41 @@
 :root{
+  --envelope-width: 220px;
+  --envelope-height: 140px;
   --accent: #0d6efd;
-  --muted: #6c757d;
 }
 
-body{
-  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans", "Helvetica Neue", Arial;
-  color: #212529;
-  background: #fff;
+/* Reset / base */
+html,body{height:100%;margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,"Noto Sans",Helvetica,Arial;color:#212529}
+
+/* Keep page short: center content vertically */
+main{min-height:70vh}
+
+/* Envelope */
+.envelope{width:var(--envelope-width);height:var(--envelope-height);position:relative;margin:0 auto;cursor:pointer;outline:none}
+.envelope *{box-sizing:border-box}
+
+.envelope .body{position:absolute;left:0;right:0;bottom:0;height:70%;background:linear-gradient(180deg,#fff,#f7f9ff);border:2px solid rgba(33,37,41,0.08);border-radius:6px;overflow:hidden;display:flex;align-items:flex-end;justify-content:center;padding-bottom:10px}
+
+.envelope .flap{position:absolute;top:0;left:0;right:0;height:54%;background:linear-gradient(180deg,var(--accent),#2563eb);clip-path:polygon(0 0,100% 0,50% 100%);transform-origin:50% 0%;transition:transform 300ms ease;box-shadow:0 6px 18px rgba(16,24,40,0.06)}
+
+/* Letter inside the envelope */
+.letter{width:78%;height:62%;background:#fff;border:1px solid rgba(33,37,41,0.06);border-radius:4px;box-shadow:0 6px 16px rgba(16,24,40,0.06);transform:translateY(0);transition:transform 200ms ease}
+
+/* Open flap */
+.envelope.open .flap{transform:rotateX(180deg) translateY(-6px)}
+
+/* Flying letter clone animation class (applied to clone) */
+.fly-away{
+  position:fixed;left:0;top:0;width:60%;max-width:360px;height:auto;pointer-events:none;z-index:2000;animation:fly 900ms cubic-bezier(.22,.9,.32,1) forwards
 }
 
-/* Hero 客製 */
-.hero-section{
-  background: linear-gradient(90deg, rgba(13,110,253,0.06), rgba(13,110,253,0.02));
-  padding-top: 4.5rem;
-  padding-bottom: 4.5rem;
+@keyframes fly{
+  0%{transform:translateY(0) rotate(0) scale(1);opacity:1}
+  40%{transform:translateY(-140px) rotate(-6deg) scale(1.02);opacity:1}
+  100%{transform:translateY(-360px) rotate(10deg) scale(0.9);opacity:0}
 }
 
-/* Cards 影子微調 */
-.card{
-  border: 0;
-  border-radius: 0.75rem;
-  box-shadow: 0 6px 18px rgba(16,24,40,0.06);
-}
-
-/* Footer */
-footer{border-top:1px solid #f1f3f5}
-
-/* 小螢幕的 navbar brand 微調 */
-@media (max-width:576px){
-  .navbar-brand{font-size:1rem}
+/* Responsive tweak */
+@media (max-width:480px){
+  :root{--envelope-width:160px;--envelope-height:110px}
 }
