@@ -28,14 +28,26 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const clone = document.createElement('div');
     clone.className = 'clone-paper';
-    const width = Math.min(window.innerWidth * 0.6, 520);
+    // 設定最大寬度，並確保在窄螢幕上不會超出
+    const margin = 16; // 視窗邊界預留距離 (px)
+    let maxWidth = Math.min(window.innerWidth - margin * 2, 520);
+    // 若視窗太窄，縮小 clone
+    const width = Math.min(Math.max(window.innerWidth * 0.6, 260), maxWidth);
     const height = Math.round(width * 1.0);
     clone.style.width = width + 'px';
     clone.style.height = height + 'px';
+    clone.style.zIndex = 10050; // 確保在最上層
 
-    // start position near envelope
-    clone.style.left = (rect.left + (rect.width - width) / 2) + 'px';
-    clone.style.top = (rect.top + rect.height / 2 - height / 2) + 'px';
+    // 初始位置設在信封附近（水平置中於信封）
+    let left = rect.left + (rect.width - width) / 2;
+    let top = rect.top + rect.height / 2 - height / 2;
+
+    // Clamp 到視窗可見範圍，避免被裁切
+    left = Math.max(margin, Math.min(left, window.innerWidth - width - margin));
+    top = Math.max(margin + 40, Math.min(top, window.innerHeight - height - margin)); // +40 留出��首區域
+
+    clone.style.left = left + 'px';
+    clone.style.top = top + 'px';
 
     const content = document.createElement('div');
     content.className = 'page-content';
