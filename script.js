@@ -1,41 +1,89 @@
-// 點擊信封：打開翻蓋並把信件 "飛出"
-document.addEventListener('DOMContentLoaded', ()=>{
-  const envelope = document.getElementById('envelope');
-  if(!envelope) return;
-  const flap = envelope.querySelector('.flap');
-  const letter = envelope.querySelector('.letter');
+// Multi-page letter interaction
+// - Clicking envelope opens it (show open image) and creates a flying paper clone.
+// - The paper clone displays pages (array `pages`) and advances on click (wraps around).
+// - Images expected at images/envelope-closed.png, images/envelope-open.png, images/letter-paper.png
 
-  function flyLetter(){
-    // open flap briefly
-    envelope.classList.add('open');
+document.addEventListener('DOMContentLoaded', () => {
+  const envelopeBtn = document.getElementById('envelopeBtn');
+  const flyContainer = document.getElementById('flyContainer');
 
-    // get letter position and size
-    const rect = letter.getBoundingClientRect();
+  if (!envelopeBtn || !flyContainer) return;
 
-    // create a clone element to animate (so original remains for repeated clicks)
-    const clone = document.createElement('div');
-    clone.className = 'fly-away';
-    // style clone to visually match .letter
-    clone.style.width = Math.round(rect.width) + 'px';
-    clone.style.height = Math.round(rect.height) + 'px';
-    clone.style.left = (rect.left) + 'px';
-    clone.style.top = (rect.top) + 'px';
-    clone.style.background = window.getComputedStyle(letter).backgroundColor || '#fff';
-    clone.style.border = window.getComputedStyle(letter).border || '1px solid rgba(0,0,0,0.06)';
-    clone.style.borderRadius = window.getComputedStyle(letter).borderRadius || '4px';
-    clone.style.boxShadow = window.getComputedStyle(letter).boxShadow || '0 6px 16px rgba(16,24,40,0.06)';
+  // Five pages (replace text as you like)
+  const pages = [
+    `<h3>你好，歡迎來到 Piaolin Atelier</h3><p>這是一封來自工作室的小信，感謝你的來訪—希望我們的作品能帶給你靈感。</p>`,
+    `<h3>關於我們</h3><p>Piaolin Atelier 專注於插畫與視覺設計，提供品牌插畫與作品展示服務。</p>`,
+    `<h3>服務項目</h3><p>網站視覺、專案插畫、活動視覺設計。歡迎提出合作需求！</p>`,
+    `<h3>聯絡方式</h3><p>電子郵件: <a href="mailto:contact@piaolin.studio">contact@piaolin.studio</a><br>或在作品頁留下訊息。</p>`,
+    `<h3>謝謝你</h3><p>感謝閱讀這封信。若想要客製內容，我們很樂意與你討論合作細節。</p>`
+  ];
 
-    document.body.appendChild(clone);
-
-    // after animation ends remove clone and close flap
-    clone.addEventListener('animationend', ()=>{
-      clone.remove();
-    });
-
-    // close flap after a short delay so user sees it open
-    setTimeout(()=> envelope.classList.remove('open'), 700);
+  function showOpen(state) {
+    if (state) envelopeBtn.classList.add('open'); else envelopeBtn.classList.remove('open');
   }
 
-  envelope.addEventListener('click', flyLetter);
-  envelope.addEventListener('keydown', (e)=>{ if(e.key === 'Enter' || e.key === ' ') { e.preventDefault(); flyLetter(); } });
+  function createPaperClone() {
+    const closedImg = envelopeBtn.querySelector('.envelope-img.closed');
+    const rect = closedImg.getBoundingClientRect();
+
+    const clone = document.createElement('div');
+    clone.className = 'clone-paper';
+    const width = Math.min(window.innerWidth * 0.6, 520);
+    const height = Math.round(width * 1.0);
+    clone.style.width = width + 'px';
+    clone.style.height = height + 'px';
+
+    // start position near envelope
+    clone.style.left = (rect.left + (rect.width - width) / 2) + 'px';
+    clone.style.top = (rect.top + rect.height / 2 - height / 2) + 'px';
+
+    const content = document.createElement('div');
+    content.className = 'page-content';
+    clone.appendChild(content);
+
+    const indicator = document.createElement('div');
+    indicator.className = 'page-indicator';
+    clone.appendChild(indicator);
+
+    let pageIndex = 0;
+
+    function renderPage() {
+      content.innerHTML = pages[pageIndex];
+      indicator.textContent = `${pageIndex + 1} / ${pages.length}`;
+      clone.classList.add('turning');
+      setTimeout(() => clone.classList.remove('turning'), 220);
+    }
+
+    clone.addEventListener('click', (e) => {
+      e.stopPropagation();
+      pageIndex = (pageIndex + 1) % pages.length;
+      renderPage();
+    });
+
+    clone.tabIndex = 0;
+    clone.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); pageIndex = (pageIndex + 1) % pages.length; renderPage(); }
+      else if (e.key === 'ArrowLeft') { e.preventDefault(); pageIndex = (pageIndex - 1 + pages.length) % pages.length; renderPage(); }
+      else if (e.key === 'Escape') clone.remove();
+    });
+
+    renderPage();
+    flyContainer.appendChild(clone);
+
+    // focus for keyboard navigation
+    setTimeout(()=> clone.focus(), 300);
+
+    return clone;
+  }
+
+  envelopeBtn.addEventListener('click', () => {
+    // show open briefly
+    showOpen(true);
+    setTimeout(()=> showOpen(false), 700);
+
+    // create flying paper
+    createPaperClone();
+  });
+
+  envelopeBtn.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); envelopeBtn.click(); } });
 });
