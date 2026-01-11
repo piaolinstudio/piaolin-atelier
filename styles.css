@@ -1,86 +1,72 @@
-:root{
-  --envelope-w: 300px;
-  --envelope-h: 200px;
-  --paper-aspect: 1.2;
+* {
+  box-sizing: border-box;
 }
 
-html,body{height:100%;margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,"Noto Sans",Helvetica,Arial;color:#212529;background:#fff}
-main{min-height:70vh}
-
-/* envelope button */
-.envelope-btn{background:none;border:0;padding:0;cursor:pointer;display:block;position:relative;width:var(--envelope-w);height:auto}
-.envelope-btn:focus{outline:3px solid rgba(13,110,253,0.18);border-radius:8px}
-
-/* both images stacked; show closed by default */
-.envelope-img{width:100%;height:auto;display:block;user-select:none}
-.envelope-img.open{position:absolute;left:0;top:0;opacity:0;transform:translateY(6px) scale(0.98);transition:opacity .25s, transform .4s}
-
-/* when envelope is opening, show open image */
-.envelope-btn.open .envelope-img.closed{opacity:0;transform:translateY(-6px) scale(0.98);transition:opacity .25s, transform .4s}
-.envelope-btn.open .envelope-img.open{opacity:1;transform:translateY(0) scale(1)}
-
-/* fly-away wrapper (where clones are appended) */
-#flyContainer{position:fixed;left:0;top:0;width:100%;height:100%;pointer-events:none;z-index:2000}
-
-/* cloned paper style (the clone will include paper background and content) */
-.clone-paper{
-  position:fixed;
-  pointer-events:auto; /* to receive clicks for paging */
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  background-image:url('images/letter-paper.png');
-  background-size:cover;
-  background-position:center;
-  border-radius:8px;
-  box-shadow:0 14px 40px rgba(16,24,40,0.18);
-  overflow:hidden;
-  transform-origin:center;
-  animation:flyUp 900ms cubic-bezier(.22,.9,.32,1) forwards;
-  user-select:none;
+html, body {
+  margin: 0;
+  width: 100%;
+  height: 100%;
 }
 
-/* content area inside paper */
-.clone-paper .page-content{
-  padding:28px;
-  width:92%;
-  height:92%;
-  display:flex;
-  flex-direction:column;
-  justify-content:flex-start;
-  align-items:flex-start;
-  background:transparent;
-  color:#2b2b2b;
-  text-shadow: 0 1px 0 rgba(255,255,255,0.2);
-  font-size:16px;
-  line-height:1.6;
+body {
+  overflow: hidden;
+  background: radial-gradient(circle at top, #2a1f3d, #0e0b1a);
+  font-family: sans-serif;
 }
 
-/* page turn visual hint (subtle) */
-.clone-paper.turning{transition:transform 220ms ease, opacity 220ms ease; transform: rotateY(12deg) scale(0.995); opacity:0.95}
-
-/* small page counter */
-.page-indicator{
-  position:absolute;
-  right:12px;
-  bottom:10px;
-  background:rgba(255,255,255,0.8);
-  color:#333;
-  padding:4px 8px;
-  border-radius:12px;
-  font-size:12px;
-  box-shadow:0 4px 12px rgba(16,24,40,0.08);
+/* 主舞台：鎖在視窗內 */
+.stage {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
 }
 
-/* animation keyframes */
-@keyframes flyUp{
-  0%{opacity:0; transform:translateY(0) scale(1)}
-  30%{opacity:1; transform:translateY(-60px) rotate(-4deg) scale(1.02)}
-  100%{opacity:1; transform:translateY(-220px) rotate(6deg) scale(0.96)}
+/* 信封 */
+.envelope {
+  position: absolute;
+  bottom: 6vh;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(72vw, 520px);
+  height: auto;
+  z-index: 3;
+  cursor: pointer;
+  user-select: none;
 }
 
-/* responsive */
-@media (max-width:600px){
-  :root{--envelope-w:220px}
-  .clone-paper .page-content{font-size:14px;padding:18px}
+.envelope-open {
+  display: none;
+}
+
+/* 信紙（關鍵：永不超出視窗） */
+.letter {
+  position: absolute;
+  left: 50%;
+  bottom: 8vh;
+
+  width: min(86vw, 620px);
+  max-height: 85vh;
+  height: auto;
+
+  transform: translate(-50%, 120%);
+  opacity: 0;
+
+  object-fit: contain;
+  z-index: 2;
+
+  transition:
+    transform 1s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.8s ease;
+
+  pointer-events: none;
+  user-select: none;
+}
+
+/* 打開後動畫 */
+.stage.opened .letter {
+  transform: translate(-50%, -20%);
+  opacity: 1;
 }
