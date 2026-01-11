@@ -1,41 +1,86 @@
 :root{
-  --envelope-width: 220px;
-  --envelope-height: 140px;
-  --accent: #0d6efd;
+  --envelope-w: 300px;
+  --envelope-h: 200px;
+  --paper-aspect: 1.2;
 }
 
-/* Reset / base */
-html,body{height:100%;margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,"Noto Sans",Helvetica,Arial;color:#212529}
-
-/* Keep page short: center content vertically */
+html,body{height:100%;margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,"Noto Sans",Helvetica,Arial;color:#212529;background:#fff}
 main{min-height:70vh}
 
-/* Envelope */
-.envelope{width:var(--envelope-width);height:var(--envelope-height);position:relative;margin:0 auto;cursor:pointer;outline:none}
-.envelope *{box-sizing:border-box}
+/* envelope button */
+.envelope-btn{background:none;border:0;padding:0;cursor:pointer;display:block;position:relative;width:var(--envelope-w);height:auto}
+.envelope-btn:focus{outline:3px solid rgba(13,110,253,0.18);border-radius:8px}
 
-.envelope .body{position:absolute;left:0;right:0;bottom:0;height:70%;background:linear-gradient(180deg,#fff,#f7f9ff);border:2px solid rgba(33,37,41,0.08);border-radius:6px;overflow:hidden;display:flex;align-items:flex-end;justify-content:center;padding-bottom:10px}
+/* both images stacked; show closed by default */
+.envelope-img{width:100%;height:auto;display:block;user-select:none}
+.envelope-img.open{position:absolute;left:0;top:0;opacity:0;transform:translateY(6px) scale(0.98);transition:opacity .25s, transform .4s}
 
-.envelope .flap{position:absolute;top:0;left:0;right:0;height:54%;background:linear-gradient(180deg,var(--accent),#2563eb);clip-path:polygon(0 0,100% 0,50% 100%);transform-origin:50% 0%;transition:transform 300ms ease;box-shadow:0 6px 18px rgba(16,24,40,0.06)}
+/* when envelope is opening, show open image */
+.envelope-btn.open .envelope-img.closed{opacity:0;transform:translateY(-6px) scale(0.98);transition:opacity .25s, transform .4s}
+.envelope-btn.open .envelope-img.open{opacity:1;transform:translateY(0) scale(1)}
 
-/* Letter inside the envelope */
-.letter{width:78%;height:62%;background:#fff;border:1px solid rgba(33,37,41,0.06);border-radius:4px;box-shadow:0 6px 16px rgba(16,24,40,0.06);transform:translateY(0);transition:transform 200ms ease}
+/* fly-away wrapper (where clones are appended) */
+#flyContainer{position:fixed;left:0;top:0;width:100%;height:100%;pointer-events:none;z-index:2000}
 
-/* Open flap */
-.envelope.open .flap{transform:rotateX(180deg) translateY(-6px)}
-
-/* Flying letter clone animation class (applied to clone) */
-.fly-away{
-  position:fixed;left:0;top:0;width:60%;max-width:360px;height:auto;pointer-events:none;z-index:2000;animation:fly 900ms cubic-bezier(.22,.9,.32,1) forwards
+/* cloned paper style (the clone will include paper background and content) */
+.clone-paper{
+  position:fixed;
+  pointer-events:auto; /* to receive clicks for paging */
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background-image:url('images/letter-paper.png');
+  background-size:cover;
+  background-position:center;
+  border-radius:8px;
+  box-shadow:0 14px 40px rgba(16,24,40,0.18);
+  overflow:hidden;
+  transform-origin:center;
+  animation:flyUp 900ms cubic-bezier(.22,.9,.32,1) forwards;
+  user-select:none;
 }
 
-@keyframes fly{
-  0%{transform:translateY(0) rotate(0) scale(1);opacity:1}
-  40%{transform:translateY(-140px) rotate(-6deg) scale(1.02);opacity:1}
-  100%{transform:translateY(-360px) rotate(10deg) scale(0.9);opacity:0}
+/* content area inside paper */
+.clone-paper .page-content{
+  padding:28px;
+  width:92%;
+  height:92%;
+  display:flex;
+  flex-direction:column;
+  justify-content:flex-start;
+  align-items:flex-start;
+  background:transparent;
+  color:#2b2b2b;
+  text-shadow: 0 1px 0 rgba(255,255,255,0.2);
+  font-size:16px;
+  line-height:1.6;
 }
 
-/* Responsive tweak */
-@media (max-width:480px){
-  :root{--envelope-width:160px;--envelope-height:110px}
+/* page turn visual hint (subtle) */
+.clone-paper.turning{transition:transform 220ms ease, opacity 220ms ease; transform: rotateY(12deg) scale(0.995); opacity:0.95}
+
+/* small page counter */
+.page-indicator{
+  position:absolute;
+  right:12px;
+  bottom:10px;
+  background:rgba(255,255,255,0.8);
+  color:#333;
+  padding:4px 8px;
+  border-radius:12px;
+  font-size:12px;
+  box-shadow:0 4px 12px rgba(16,24,40,0.08);
+}
+
+/* animation keyframes */
+@keyframes flyUp{
+  0%{opacity:0; transform:translateY(0) scale(1)}
+  30%{opacity:1; transform:translateY(-60px) rotate(-4deg) scale(1.02)}
+  100%{opacity:1; transform:translateY(-220px) rotate(6deg) scale(0.96)}
+}
+
+/* responsive */
+@media (max-width:600px){
+  :root{--envelope-w:220px}
+  .clone-paper .page-content{font-size:14px;padding:18px}
 }
