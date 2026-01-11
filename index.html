@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Piaolin Atelier — 範例（Bootstrap）</title>
+
+  <!-- Bootstrap 5 CSS (CDN) -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Optional Bootstrap Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+
+  <style>
+  :root{
+    --accent: #0d6efd;
+    --muted: #6c757d;
+  }
+
+  body{
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans", "Helvetica Neue", Arial;
+    color: #212529;
+    background: #fff;
+  }
+
+  /* Hero 客製 */
+  .hero-section{
+    background: linear-gradient(90deg, rgba(13,110,253,0.06), rgba(13,110,253,0.02));
+    padding-top: 4.5rem;
+    padding-bottom: 4.5rem;
+  }
+
+  /* Cards 影子微調 */
+  .card{
+    border: 0;
+    border-radius: 0.75rem;
+    box-shadow: 0 6px 18px rgba(16,24,40,0.06);
+  }
+
+  /* Footer */
+  footer{border-top:1px solid #f1f3f5}
+
+  /* 小螢幕的 navbar brand 微調 */
+  @media (max-width:576px){
+    .navbar-brand{font-size:1rem}
+  }
+  </style>
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top">
+    <div class="container">
+      <a class="navbar-brand fw-bold" href="#">Piaolin Atelier</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav"
+        aria-controls="mainNav" aria-expanded="false" aria-label="切換選單">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="mainNav">
+        <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+          <li class="nav-item"><a class="nav-link" href="#home">首頁</a></li>
+          <li class="nav-item"><a class="nav-link" href="#about">關於</a></li>
+          <li class="nav-item"><a class="nav-link" href="#works">作品</a></li>
+          <li class="nav-item"><a class="nav-link" href="#contact">聯絡</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <header id="home" class="py-5 hero-section">
+    <div class="container text-center">
+      <h1 class="display-5 fw-bold">你好，我是 Piaolin</h1>
+      <p class="lead text-muted">使用 Bootstrap 建置的簡潔響應式作品展示範本。</p>
+      <a class="btn btn-primary btn-lg" href="#works">查看作品</a>
+    </div>
+  </header>
+
+  <main class="py-5">
+    <section id="about" class="container mb-5">
+      <div class="row align-items-center">
+        <div class="col-md-5">
+          <img src="https://via.placeholder.com/600x400" alt="About" class="img-fluid rounded shadow-sm">
+        </div>
+        <div class="col-md-7">
+          <h2>關於我</h2>
+          <p class="text-muted">在這放你的簡短介紹、專長與服務內容。範例文字可以替換成你的個人簡介或公司簡介。</p>
+          <ul>
+            <li>網站設計 / 前端開發</li>
+            <li>視覺設計 / 品牌識別</li>
+            <li>作品整合與部署</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section id="works" class="container mb-5">
+      <h2 class="mb-4">作品集</h2>
+      <div class="row g-4">
+        <div class="col-sm-6 col-lg-4">
+          <div class="card h-100">
+            <img src="https://via.placeholder.com/800x450" class="card-img-top" alt="作品1">
+            <div class="card-body">
+              <h5 class="card-title">作品一</h5>
+              <p class="card-text text-muted">簡短描述或案例說明。</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-6 col-lg-4">
+          <div class="card h-100">
+            <img src="https://via.placeholder.com/800x450" class="card-img-top" alt="作品2">
+            <div class="card-body">
+              <h5 class="card-title">作品二</h5>
+              <p class="card-text text-muted">簡短描述或案例說明。</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-6 col-lg-4">
+          <div class="card h-100">
+            <img src="https://via.placeholder.com/800x450" class="card-img-top" alt="作品3">
+            <div class="card-body">
+              <h5 class="card-title">作品三</h5>
+              <p class="card-text text-muted">簡短描述或案例說明。</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="contact" class="container mb-5">
+      <h2 class="mb-3">聯絡我</h2>
+
+      <!-- Alert 成功訊息（預設隱藏） -->
+      <div id="submitAlert" class="alert alert-success d-none" role="alert">
+        感謝，你的訊息已送出（範例：未實際傳送）。
+      </div>
+
+      <form id="contactForm" class="row g-3 needs-validation" novalidate>
+        <div class="col-md-6">
+          <label for="name" class="form-label">姓名</label>
+          <input type="text" class="form-control" id="name" name="name" required>
+          <div class="invalid-feedback">請輸入姓名。</div>
+        </div>
+        <div class="col-md-6">
+          <label for="email" class="form-label">電子郵件</label>
+          <input type="email" class="form-control" id="email" name="email" required>
+          <div class="invalid-feedback">請輸入有效的電子郵件地址。</div>
+        </div>
+        <div class="col-12">
+          <label for="message" class="form-label">訊息</label>
+          <textarea class="form-control" id="message" name="message" rows="5" required></textarea>
+          <div class="invalid-feedback">請輸入你的訊息。</div>
+        </div>
+        <div class="col-12">
+          <button class="btn btn-primary" type="submit">送出</button>
+        </div>
+      </form>
+    </section>
+  </main>
+
+  <footer class="py-4 bg-light">
+    <div class="container text-center text-muted small">
+      © 2026 Piaolin Atelier — All rights reserved.
+    </div>
+  </footer>
+
+  <!-- Bootstrap 5 Bundle (含 Popper) -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+  // 啟用 Bootstrap 表單驗證並處理送出（範例：不會實際傳送）
+  document.addEventListener('DOMContentLoaded', function () {
+    const forms = document.querySelectorAll('.needs-validation');
+    Array.prototype.slice.call(forms).forEach(function (form) {
+      form.addEventListener('submit', function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+        if (form.checkValidity()) {
+          const alertEl = document.getElementById('submitAlert');
+          if (alertEl) {
+            alertEl.classList.remove('d-none');
+            setTimeout(() => alertEl.classList.add('d-none'), 4000);
+          }
+          form.reset();
+          form.classList.remove('was-validated');
+        } else {
+          form.classList.add('was-validated');
+        }
+      }, false);
+    });
+  });
+  </script>
+</body>
+</html>
